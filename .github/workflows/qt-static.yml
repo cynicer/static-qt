@@ -8,9 +8,9 @@ on:
         required: true
         default: '5.15.2'
       openssl_version:
-        description: 'OpenSSL version (e.g., 3.0.14)'
+        description: 'OpenSSL version (e.g., 3_5_1)'
         required: true
-        default: '3.0.14'
+        default: '3_5_1'
       vulkan_sdk_version:
         description: 'Vulkan SDK version (e.g., 1.3.261.1)'
         required: true
@@ -49,8 +49,8 @@ jobs:
 
       - name: Download and Setup Vulkan SDK
         run: |
-          curl -LO https://sdk.lunarg.com/sdk/download/${{ env.VULKAN_SDK_VERSION }}/windows/VulkanSDK-${{ env.VULKAN_SDK_VERSION }}-Installer.exe?Human=true -o vulkan_installer.exe
-          Start-Process -Wait -FilePath vulkan_installer.exe -ArgumentList "/S", "/D=${{ env.VULKAN_SDK_DIR }}"
+          curl -L -o vulkan_installer.exe https://sdk.lunarg.com/sdk/download/${{ env.VULKAN_SDK_VERSION }}/windows/VulkanSDK-${{ env.VULKAN_SDK_VERSION }}-Installer.exe
+          Start-Process -Wait -FilePath ".\vulkan_installer.exe" -ArgumentList "/S", "/D=${{ env.VULKAN_SDK_DIR }}"
 
       - name: Set up MSVC
         uses: ilammy/msvc-dev-cmd@v1
