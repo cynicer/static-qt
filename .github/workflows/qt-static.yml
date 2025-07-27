@@ -44,8 +44,8 @@ jobs:
 
       - name: Download and Extract OpenSSL (prebuilt)
         run: |
-          curl -LO https://slproweb.com/download/Win64OpenSSL-${{ env.OPENSSL_VERSION }}_LTS.exe
-          Start-Process -Wait -FilePath Win64OpenSSL-${{ env.OPENSSL_VERSION }}_LTS.exe -ArgumentList "/silent", "/verysilent", "/sp-", "/suppressmsgboxes", "/DIR=C:\OpenSSL"
+          curl -LO https://slproweb.com/download/Win64OpenSSL-${{ env.OPENSSL_VERSION }}.exe
+          Start-Process -Wait -FilePath Win64OpenSSL-${{ env.OPENSSL_VERSION }}.exe -ArgumentList "/silent", "/verysilent", "/sp-", "/suppressmsgboxes", "/DIR=C:\OpenSSL"
 
       - name: Download and Setup Vulkan SDK
         run: |
