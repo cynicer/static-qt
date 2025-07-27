@@ -36,7 +36,7 @@ jobs:
 
       - name: Download Qt Source
         run: |
-          curl -LO https://download.qt.io/archive/qt/${{ env.QT_VERSION }}/$QT_VERSION/single/qt-everywhere-src-${{ env.QT_VERSION }}.zip
+          curl -LO https://download.qt.io/archive/qt/${{ env.QT_VERSION }}/${{ env.QT_VERSION }}/single/qt-everywhere-src-${{ env.QT_VERSION }}.zip
           7z x qt-everywhere-src-${{ env.QT_VERSION }}.zip -y > nul
 
       - name: Download and Extract OpenSSL (prebuilt)
