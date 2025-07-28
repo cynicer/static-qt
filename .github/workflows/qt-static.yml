@@ -66,8 +66,9 @@ jobs:
             -DCMAKE_INSTALL_PREFIX=${PWD}/../qt-static \
             -DQT_BUILD_EXAMPLES=OFF \
             -DQT_BUILD_TESTS=OFF \
-            -DQT_FEATURE_static=yes \
-            -DQT_FEATURE_shared=no \
+            -DQT_FEATURE_static=ON \
+            -DQT_FEATURE_shared=OFF \
+            -DCMAKE_POLICY_DEFAULT_CMP0177=NEW \
             -DOPENSSL_ROOT_DIR="C:/OpenSSL" \
             -DOPENSSL_USE_STATIC_LIBS=TRUE \
             -DCMAKE_PREFIX_PATH="C:/OpenSSL;${{ env.VULKAN_SDK_DIR }}" \
