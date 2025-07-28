@@ -58,8 +58,21 @@ jobs:
       - name: Configure Qt with CMake (static + OpenSSL + Vulkan)
         shell: bash
         run: |
+          # Export Vulkan environment variables
+          export VULKAN_SDK="${{ env.VULKAN_SDK_DIR }}"
+          export PATH="$VULKAN_SDK/Bin:$PATH"
+          export INCLUDE="$VULKAN_SDK/Include;$INCLUDE"
+          export LIB="$VULKAN_SDK/Lib;$LIB"
+      
+          # Confirm presence of vulkan.h
+          if [ ! -f "$VULKAN_SDK/Include/vulkan/vulkan.h" ]; then
+            echo "ERROR: Vulkan headers not found at $VULKAN_SDK/Include/vulkan/vulkan.h"
+            exit 1
+          fi
+      
           cd qt-everywhere-src-${{ env.QT_VERSION }}
-          mkdir build && cd build
+          mkdir -p build && cd build
+      
           cmake .. \
             -G "Ninja" \
             -DCMAKE_BUILD_TYPE=Release \
@@ -72,9 +85,10 @@ jobs:
             -DQT_FEATURE_vulkan=ON \
             -DOPENSSL_ROOT_DIR="C:/OpenSSL" \
             -DOPENSSL_USE_STATIC_LIBS=TRUE \
-            -DCMAKE_PREFIX_PATH="C:/OpenSSL;${{ env.VULKAN_SDK_DIR }}" \
-            -DCMAKE_INCLUDE_PATH="C:/OpenSSL/include;${{ env.VULKAN_SDK_DIR }}/Include" \
-            -DCMAKE_LIBRARY_PATH="C:/OpenSSL/lib;${{ env.VULKAN_SDK_DIR }}/Lib"
+            -DCMAKE_PREFIX_PATH="C:/OpenSSL;${VULKAN_SDK}" \
+            -DCMAKE_INCLUDE_PATH="C:/OpenSSL/include;${VULKAN_SDK}/Include" \
+            -DCMAKE_LIBRARY_PATH="C:/OpenSSL/lib;${VULKAN_SDK}/Lib"
+
 
       - name: Build and install Qt
         shell: bash
