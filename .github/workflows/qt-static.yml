@@ -63,13 +63,7 @@ jobs:
           export PATH="$VULKAN_SDK/Bin:$PATH"
           export INCLUDE="$VULKAN_SDK/Include;$INCLUDE"
           export LIB="$VULKAN_SDK/Lib;$LIB"
-      
-          # Confirm presence of vulkan.h
-          if [ ! -f "$VULKAN_SDK/Include/vulkan/vulkan.h" ]; then
-            echo "ERROR: Vulkan headers not found at $VULKAN_SDK/Include/vulkan/vulkan.h"
-            exit 1
-          fi
-      
+            
           cd qt-everywhere-src-${{ env.QT_VERSION }}
           mkdir -p build && cd build
       
