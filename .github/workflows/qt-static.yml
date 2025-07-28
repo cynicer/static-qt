@@ -40,7 +40,7 @@ jobs:
           QT_MINOR_VERSION=$(echo "${{ env.QT_VERSION }}" | cut -d. -f1,2)
           echo "QT_MINOR_VERSION=$QT_MINOR_VERSION" >> $GITHUB_ENV
           curl -LO https://download.qt.io/archive/qt/$QT_MINOR_VERSION/${{ env.QT_VERSION }}/src/single/qt-everywhere-opensource-src-${{ env.QT_VERSION }}.zip
-          7z x qt-everywhere-src-${{ env.QT_VERSION }}.zip -y > /dev/null
+          7z x qt-everywhere-opensource-src-${{ env.QT_VERSION }}.zip -y > /dev/null
 
       - name: Download and Extract OpenSSL (prebuilt)
         run: |
