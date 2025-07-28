@@ -12,9 +12,9 @@ on:
         required: true
         default: '3_5_1'
       vulkan_sdk_version:
-        description: 'Vulkan SDK version (e.g., 1.4.321.1)'
+        description: 'Vulkan SDK version (e.g., 1.3.261.1)'
         required: true
-        default: '1.4.321.1'
+        default: '1.3.261.1'
 
 jobs:
   build-qt:
@@ -39,8 +39,8 @@ jobs:
         run: |
           QT_MINOR_VERSION=$(echo "${{ env.QT_VERSION }}" | cut -d. -f1,2)
           echo "QT_MINOR_VERSION=$QT_MINOR_VERSION" >> $GITHUB_ENV
-          curl -LO https://download.qt.io/archive/qt/$QT_MINOR_VERSION/${{ env.QT_VERSION }}/src/single/qt-everywhere-opensource-src-${{ env.QT_VERSION }}.zip
-          7z x qt-everywhere-opensource-src-${{ env.QT_VERSION }}.zip -y > /dev/null
+          curl -LO https://download.qt.io/archive/qt/$QT_MINOR_VERSION/${{ env.QT_VERSION }}/single/qt-everywhere-src-${{ env.QT_VERSION }}.zip
+          7z x qt-everywhere-src-${{ env.QT_VERSION }}.zip -y > /dev/null
 
       - name: Download and Extract OpenSSL (prebuilt)
         run: |
@@ -49,42 +49,37 @@ jobs:
 
       - name: Download and Setup Vulkan SDK
         run: |
-          curl -L -o vulkan_installer.exe https://sdk.lunarg.com/sdk/download/${{ env.VULKAN_SDK_VERSION }}/windows/vulkansdk-windows-X64-${{ env.VULKAN_SDK_VERSION }}.exe          
-          Start-Process -Wait -FilePath ".\vulkan_installer.exe" -ArgumentList "--root", "{{ env.VULKAN_SDK_DIR }}", "--accept-licenses", "--default-answer", "--confirm-command", "install"
+          curl -L -o vulkan_installer.exe https://sdk.lunarg.com/sdk/download/${{ env.VULKAN_SDK_VERSION }}/windows/vulkansdk-windows-x86_64-${{ env.VULKAN_SDK_VERSION }}.exe
+          Start-Process -Wait -FilePath ".\vulkan_installer.exe" -ArgumentList "--root", "${{ env.VULKAN_SDK_DIR }}", "--accept-licenses", "--default-answer", "--confirm-command", "install"
+
       - name: Set up MSVC
         uses: ilammy/msvc-dev-cmd@v1
 
-      - name: Configure Qt (static with OpenSSL + Vulkan)
-        shell: cmd
+      - name: Configure Qt with CMake (static + OpenSSL + Vulkan)
+        shell: bash
         run: |
           cd qt-everywhere-src-${{ env.QT_VERSION }}
-          set OPENSSL_DIR=C:\OpenSSL
-          set OPENSSL_LIBS=-llibssl -llibcrypto
-          set INCLUDE=%OPENSSL_DIR%\include;%INCLUDE%
-          set LIB=%OPENSSL_DIR%\lib;%LIB%
-          set PATH=%OPENSSL_DIR%\bin;%PATH%
-          set VULKAN_SDK=${{ env.VULKAN_SDK_DIR }}
-          set INCLUDE=%VULKAN_SDK%\Include;%INCLUDE%
-          set LIB=%VULKAN_SDK%\Lib;%LIB%
-          configure.bat -static -release -platform win32-msvc ^
-            -opensource -confirm-license -prefix %CD%\qt-static ^
-            -qt-zlib -qt-libpng -qt-libjpeg -qt-webp -qt-freetype ^
-            -openssl-linked ^
-            -I %OPENSSL_DIR%\include -L %OPENSSL_DIR%\lib ^
-            -I %VULKAN_SDK%\Include -L %VULKAN_SDK%\Lib ^
-            -no-opengl -make libs -nomake tools -nomake examples -nomake tests ^
-            -skip qt3d -skip qtactiveqt -skip qtandroidextras -skip qtcharts -skip qtconnectivity ^
-            -skip qtdatavis3d -skip qtdeclarative -skip qtdoc -skip qtgamepad -skip qtlocation ^
-            -skip qtlottie -skip qtmacextras -skip qtmultimedia -skip qtnetworkauth -skip qtpurchasing ^
-            -skip qtquick3d -skip qtquickcontrols -skip qtquickcontrols2 -skip qtquicktimeline ^
-            -skip qtremoteobjects -skip qtscript -skip qtsensors -skip qtspeech -skip qtsvg -skip qtwayland ^
-            -skip qtwebglplugin -skip qtwebview -skip webengine
+          mkdir build && cd build
+          cmake .. \
+            -G "Ninja" \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_INSTALL_PREFIX=${PWD}/../qt-static \
+            -DQT_BUILD_EXAMPLES=OFF \
+            -DQT_BUILD_TESTS=OFF \
+            -DQT_FEATURE_static=yes \
+            -DQT_FEATURE_shared=no \
+            -DOPENSSL_ROOT_DIR="C:/OpenSSL" \
+            -DOPENSSL_USE_STATIC_LIBS=TRUE \
+            -DCMAKE_PREFIX_PATH="C:/OpenSSL;${{ env.VULKAN_SDK_DIR }}" \
+            -DCMAKE_INCLUDE_PATH="C:/OpenSSL/include;${{ env.VULKAN_SDK_DIR }}/Include" \
+            -DCMAKE_LIBRARY_PATH="C:/OpenSSL/lib;${{ env.VULKAN_SDK_DIR }}/Lib"
 
       - name: Build and install Qt
+        shell: bash
         run: |
-          cd qt-everywhere-src-${{ env.QT_VERSION }}
-          nmake
-          nmake install
+          cd qt-everywhere-src-${{ env.QT_VERSION }}/build
+          ninja
+          ninja install
 
       - name: Package Qt
         run: |
