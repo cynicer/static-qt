@@ -66,6 +66,9 @@ jobs:
             
           cd qt-everywhere-src-${{ env.QT_VERSION }}
           mkdir -p build && cd build
+
+          echo "Vulkan SDK: ${VULKAN_SDK}"
+          echo "Vulkan SDK2: {{ env.VULKAN_SDK_DIR }}"
       
           cmake .. \
             -G "Ninja" \
