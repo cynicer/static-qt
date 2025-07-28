@@ -6,7 +6,7 @@ on:
       qt_version:
         description: 'Qt version (e.g., 6.5.6)'
         required: true
-        default: ' 6.5.6'
+        default: '6.5.6'
       openssl_version:
         description: 'OpenSSL version (e.g., 3_5_1)'
         required: true
