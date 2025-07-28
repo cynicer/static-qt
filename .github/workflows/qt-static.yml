@@ -69,6 +69,7 @@ jobs:
             -DQT_FEATURE_static=ON \
             -DQT_FEATURE_shared=OFF \
             -DCMAKE_POLICY_DEFAULT_CMP0177=NEW \
+            -DQT_FEATURE_vulkan=ON \
             -DOPENSSL_ROOT_DIR="C:/OpenSSL" \
             -DOPENSSL_USE_STATIC_LIBS=TRUE \
             -DCMAKE_PREFIX_PATH="C:/OpenSSL;${{ env.VULKAN_SDK_DIR }}" \
@@ -79,8 +80,8 @@ jobs:
         shell: bash
         run: |
           cd qt-everywhere-src-${{ env.QT_VERSION }}/build
-          ninja
-          ninja install
+          ninja -v
+          ninja install -v
 
       - name: Package Qt
         run: |
