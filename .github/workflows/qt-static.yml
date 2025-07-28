@@ -50,8 +50,7 @@ jobs:
       - name: Download and Setup Vulkan SDK
         run: |
           curl -L -o vulkan_installer.exe https://sdk.lunarg.com/sdk/download/${{ env.VULKAN_SDK_VERSION }}/windows/VulkanSDK-${{ env.VULKAN_SDK_VERSION }}-Installer.exe
-          Start-Process -Wait -FilePath ".\vulkan_installer.exe" -ArgumentList "/S", "/D=${{ env.VULKAN_SDK_DIR }}"
-
+          Start-Process -Wait -FilePath ".\vulkan_installer.exe" -ArgumentList "--root", "{{ env.VULKAN_SDK_DIR }}", "--accept-licenses", "--default-answer", "--confirm-command", "install"
       - name: Set up MSVC
         uses: ilammy/msvc-dev-cmd@v1
 
