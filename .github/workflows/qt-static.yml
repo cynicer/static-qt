@@ -100,7 +100,7 @@ jobs:
       - name: Build and install Qt
         shell: bash
         run: |
-          cd qt-everywhere-src-${{ env.QT_VERSION }}/build
+          cd qt-everywhere-src-${{ env.QT_VERSION }}
           cmake --build . --parallel
           cmake --install .
 
