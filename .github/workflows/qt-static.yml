@@ -68,15 +68,22 @@ jobs:
       
           echo "Vulkan SDK: ${VULKAN_SDK}"
       
-          cmake .. \
-            -G "Ninja" \
-            -DCMAKE_BUILD_TYPE=Release \
-            -DCMAKE_INSTALL_PREFIX="${PWD}/../qt-static" \
-            -DQT_BUILD_EXAMPLES=OFF \
-            -DQT_BUILD_TESTS=OFF \
-            -DQT_FEATURE_static=ON \
-            -DQT_FEATURE_shared=OFF \
-            -DCMAKE_POLICY_DEFAULT_CMP0177=NEW \
+          configure.bat \
+            -static \
+            -release \
+            -nomake examples \
+            -nomake tests \
+            -prefix "%CD%\..\qt-static" \
+            
+          #cmake .. \
+            #-G "Ninja" \
+            #-DCMAKE_BUILD_TYPE=Release \
+            #-DCMAKE_INSTALL_PREFIX="${PWD}/../qt-static" \
+            #-DQT_BUILD_EXAMPLES=OFF \
+            #-DQT_BUILD_TESTS=OFF \
+            #-DQT_FEATURE_static=ON \
+            #-DQT_FEATURE_shared=OFF \
+            #-DCMAKE_POLICY_DEFAULT_CMP0177=NEW \
             #-DQT_FEATURE_vulkan=ON \
             #-DVulkan_INCLUDE_DIR="${VULKAN_SDK}\\Include" \
             #-DVulkan_LIBRARY="${VULKAN_SDK}\\Lib\\vulkan-1.lib" \
@@ -90,8 +97,8 @@ jobs:
         shell: bash
         run: |
           cd qt-everywhere-src-${{ env.QT_VERSION }}/build
-          ninja -v
-          ninja install -v
+          cmake --build . --parallel
+          cmake --install .
 
       - name: Package Qt
         run: |
