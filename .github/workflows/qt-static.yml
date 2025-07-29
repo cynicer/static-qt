@@ -68,24 +68,23 @@ jobs:
       
           echo "Vulkan SDK: ${VULKAN_SDK}"
       
-          cmake .. `
-            -G "Ninja" `
-            -DCMAKE_BUILD_TYPE=Release `
-            -DCMAKE_INSTALL_PREFIX="${PWD}/../qt-static" `
-            -DQT_BUILD_EXAMPLES=OFF `
-            -DQT_BUILD_TESTS=OFF `
-            -DQT_FEATURE_static=ON `
-            -DQT_FEATURE_shared=OFF `
-            -DCMAKE_POLICY_DEFAULT_CMP0177=NEW `
-            -DQT_FEATURE_vulkan=ON `
-            -DVulkan_INCLUDE_DIR="${VULKAN_SDK}\\Include" `
-            -DVulkan_LIBRARY="${VULKAN_SDK}\\Lib\\vulkan-1.lib" `
-            -DOPENSSL_ROOT_DIR="C:\\OpenSSL" `
-            -DOPENSSL_USE_STATIC_LIBS=TRUE `
-            -DCMAKE_PREFIX_PATH="C:\\OpenSSL;${VULKAN_SDK}" `
-            -DCMAKE_INCLUDE_PATH="C:\\OpenSSL\\include;${VULKAN_SDK}\\Include" `
+          cmake .. \
+            -G "Ninja" \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_INSTALL_PREFIX="${PWD}/../qt-static" \
+            -DQT_BUILD_EXAMPLES=OFF \
+            -DQT_BUILD_TESTS=OFF \
+            -DQT_FEATURE_static=ON \
+            -DQT_FEATURE_shared=OFF \
+            -DCMAKE_POLICY_DEFAULT_CMP0177=NEW \
+            -DQT_FEATURE_vulkan=ON \
+            -DVulkan_INCLUDE_DIR="${VULKAN_SDK}\\Include" \
+            -DVulkan_LIBRARY="${VULKAN_SDK}\\Lib\\vulkan-1.lib" \
+            -DOPENSSL_ROOT_DIR="C:\\OpenSSL" \
+            -DOPENSSL_USE_STATIC_LIBS=TRUE \
+            -DCMAKE_PREFIX_PATH="C:\\OpenSSL;${VULKAN_SDK}" \
+            -DCMAKE_INCLUDE_PATH="C:\\OpenSSL\\include;${VULKAN_SDK}\\Include" \
             -DCMAKE_LIBRARY_PATH="C:\\OpenSSL\\lib;${VULKAN_SDK}\\Lib"
-
 
       - name: Build and install Qt
         shell: bash
