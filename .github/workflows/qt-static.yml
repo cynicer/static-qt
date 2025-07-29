@@ -64,7 +64,7 @@ jobs:
           export LIB="$VULKAN_SDK\\Lib;$LIB"
       
           cd qt-everywhere-src-${{ env.QT_VERSION }}
-          mkdir -p build && cd build
+          #mkdir -p build && cd build
       
           echo "Vulkan SDK: ${VULKAN_SDK}"
 
