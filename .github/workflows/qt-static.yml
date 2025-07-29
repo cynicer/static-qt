@@ -76,6 +76,7 @@ jobs:
             -DQT_BUILD_TESTS=OFF \
             -DQT_FEATURE_static=ON \
             -DQT_FEATURE_shared=OFF \
+            -DCMAKE_CXX_FLAGS="/DQT_STATIC" \
             -DCMAKE_POLICY_DEFAULT_CMP0177=NEW \
             -DQT_FEATURE_vulkan=ON \
             -DVulkan_INCLUDE_DIR="${VULKAN_SDK}\\Include" \
