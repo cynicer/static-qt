@@ -58,10 +58,10 @@ jobs:
       - name: Configure Qt with CMake (static + OpenSSL + Vulkan)
         shell: bash
         run: |
-          #export VULKAN_SDK="${{ env.VULKAN_SDK_DIR }}"
-          #export PATH="$VULKAN_SDK\\Bin:$PATH"
-          #export INCLUDE="$VULKAN_SDK\\Include;$INCLUDE"
-          #export LIB="$VULKAN_SDK\\Lib;$LIB"
+          export VULKAN_SDK="${{ env.VULKAN_SDK_DIR }}"
+          export PATH="$VULKAN_SDK\\Bin:$PATH"
+          export INCLUDE="$VULKAN_SDK\\Include;$INCLUDE"
+          export LIB="$VULKAN_SDK\\Lib;$LIB"
       
           cd qt-everywhere-src-${{ env.QT_VERSION }}
           #mkdir -p build && cd build
