@@ -38,8 +38,9 @@ jobs:
 
       - name: Download and Extract OpenSSL (prebuilt)
         run: |
-          curl -LO https://slproweb.com/download/Win64OpenSSL-${{ env.OPENSSL_VERSION }}.exe
-          Start-Process -Wait -FilePath Win64OpenSSL-${{ env.OPENSSL_VERSION }}.exe -ArgumentList "/silent", "/verysilent", "/sp-", "/suppressmsgboxes", "/DIR=C:\OpenSSL"
+          $installer = "Win64OpenSSL-${{ env.OPENSSL_VERSION }}.exe"
+          Invoke-WebRequest -Uri "https://slproweb.com/download/$installer" -OutFile $installer
+          Start-Process -Wait -FilePath $installer -ArgumentList "/silent", "/verysilent", "/sp-", "/suppressmsgboxes", "/DIR=C:\OpenSSL"
 
       - name: Set up MSVC
         uses: ilammy/msvc-dev-cmd@v1
