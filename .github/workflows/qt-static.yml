@@ -53,7 +53,7 @@ jobs:
           ../qt-everywhere-src-${{ env.QT_VERSION }}/configure -static -release -platform win32-msvc \
             -opensource -confirm-license -prefix "../${{ env.QT_VERSION }}" \
             -skip qtwebengine \
-            -skip qt3d -skip qtcharts -skip qtdatavis3d -skip qtwayland -skip qtvirtualkeyboard \
+            -skip qt3d -skip qtcharts -skip qtdatavis3d -skip qtwayland -skip qtvirtualkeyboard -skip qtwebsockets -skip qtwebchannel -skip qtwebview \
             -openssl-linked -I "C:/OpenSSL/include" -L "C:/OpenSSL/lib" \
             -feature-relocatable -nomake examples -nomake tests
 
