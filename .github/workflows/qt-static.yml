@@ -53,8 +53,9 @@ jobs:
           ../qt-everywhere-src-${{ env.QT_VERSION }}/configure -static -release -platform win32-msvc \
             -opensource -confirm-license -prefix "../${{ env.QT_VERSION }}" \
             -skip qtwebengine \
+            -skip qt3d -skip qt3d -skip qtquick3d -skip qtcharts -skip qtdatavis3d -skip qtwayland -skip qtvirtualkeyboard
             -openssl-linked -I "C:/OpenSSL/include" -L "C:/OpenSSL/lib" \
-             -feature-relocatable -nomake examples -nomake tests
+            -feature-relocatable -nomake examples -nomake tests
 
       - name: Build and install Qt
         shell: bash
