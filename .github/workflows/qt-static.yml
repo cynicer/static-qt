@@ -53,6 +53,7 @@ jobs:
           cd "${{ env.QT_VERSION }}-build"
           ../qt-everywhere-src-${{ env.QT_VERSION }}/configure -static -release -platform win32-msvc \
             -opensource -confirm-license -prefix "../${{ env.QT_VERSION }}" \
+            -qt-zlib -qt-libjpeg -qt-libpng -qt-freetype -qt-pcre -qt-harfbuzz \
             -skip qtwebengine \
             -openssl-linked -I "C:/OpenSSL/include" -L "C:/OpenSSL/lib" \
             -feature-relocatable -nomake examples -nomake tests
