@@ -14,7 +14,7 @@ on:
 
 jobs:
   build-qt:
-    runs-on: windows-latest
+    runs-on: windows
 
     env:
       QT_VERSION: ${{ inputs.qt_version }}
@@ -53,7 +53,6 @@ jobs:
           ../qt-everywhere-src-${{ env.QT_VERSION }}/configure -static -release -platform win32-msvc \
             -opensource -confirm-license -prefix "../${{ env.QT_VERSION }}" \
             -skip qtwebengine \
-            -skip qt3d -skip qtcharts -skip qtdatavis3d -skip qtwayland -skip qtvirtualkeyboard -skip qtwebsockets -skip qtwebchannel -skip qtwebview  -skip qtdoc -skip qthttpserver -skip qtlottie -skip qtmqtt -skip qtopcua -skip qtremoteobjects -skip qtscxml -skip qtsensors -skip qtserialbus -skip qtserialport -skip qtspeech \
             -openssl-linked -I "C:/OpenSSL/include" -L "C:/OpenSSL/lib" \
             -feature-relocatable -nomake examples -nomake tests
 
