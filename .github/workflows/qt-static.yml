@@ -11,10 +11,6 @@ on:
         description: 'OpenSSL version (e.g., 3_5_1)'
         required: true
         default: '3_5_1'
-      vulkan_sdk_version:
-        description: 'Vulkan SDK version (e.g., 1.4.321.1)'
-        required: true
-        default: '1.4.321.1'
 
 jobs:
   build-qt:
@@ -23,8 +19,6 @@ jobs:
     env:
       QT_VERSION: ${{ inputs.qt_version }}
       OPENSSL_VERSION: ${{ inputs.openssl_version }}
-      VULKAN_SDK_VERSION: ${{ inputs.vulkan_sdk_version }}
-      VULKAN_SDK_DIR: C:/VulkanSDK/${{ inputs.vulkan_sdk_version }}
 
     steps:
       - name: Checkout
@@ -47,63 +41,30 @@ jobs:
           curl -LO https://slproweb.com/download/Win64OpenSSL-${{ env.OPENSSL_VERSION }}.exe
           Start-Process -Wait -FilePath Win64OpenSSL-${{ env.OPENSSL_VERSION }}.exe -ArgumentList "/silent", "/verysilent", "/sp-", "/suppressmsgboxes", "/DIR=C:\OpenSSL"
 
-      - name: Download and Setup Vulkan SDK
-        run: |
-          curl -L -o vulkan_installer.exe https://sdk.lunarg.com/sdk/download/${{ env.VULKAN_SDK_VERSION }}/windows/vulkansdk-windows-X64-${{ env.VULKAN_SDK_VERSION }}.exe          
-          Start-Process -Wait -FilePath ".\vulkan_installer.exe" -ArgumentList "--root", "{{ env.VULKAN_SDK_DIR }}", "--accept-licenses", "--default-answer", "--confirm-command", "install"
-          
       - name: Set up MSVC
         uses: ilammy/msvc-dev-cmd@v1
 
-      - name: Configure Qt with CMake (static + OpenSSL + Vulkan)
+      - name: Configure Qt with CMake (static + OpenSSL)
         shell: bash
         run: |
-          export VULKAN_SDK="${{ env.VULKAN_SDK_DIR }}"
-          export PATH="$VULKAN_SDK\\Bin:$PATH"
-          export INCLUDE="$VULKAN_SDK\\Include;$INCLUDE"
-          export LIB="$VULKAN_SDK\\Lib;$LIB"
-      
-          cd qt-everywhere-src-${{ env.QT_VERSION }}
-          #mkdir -p build && cd build
-      
-          echo "Vulkan SDK: ${VULKAN_SDK}"
-          echo "Vulkan SDK2: "${{ env.VULKAN_SDK_DIR }}""
-
-          #cmd /c "configure.bat -static -release -platform win32-msvc -opensource -confirm-license -prefix %CD%\qt-static -qt-zlib -qt-libpng -qt-webp -qt-libjpeg -qt-freetype -no-opengl -skip qt3d -skip qtactiveqt -skip qtandroidextras -skip qtcharts -skip qtconnectivity -skip qtdatavis3d -skip qtdeclarative -skip qtdoc -skip qtgamepad -skip qtlocation -skip qtlottie -skip qtmacextras -skip qtmultimedia -skip qtnetworkauth -skip qtpurchasing -skip qtquick3d -skip qtquickcontrols -skip qtquickcontrols2 -skip qtquicktimeline -skip qtremoteobjects -skip qtscript -skip qtsensors -skip qtspeech -skip qtsvg -skip qtwayland -skip qtwebglplugin -skip qtwebview -skip webengine -make libs -nomake tools -nomake examples -nomake tests"
-
-          ./configure -static -release -platform win32-msvc \
-            -opensource -confirm-license -prefix "$(pwd -W)/qt-static" \
-            -qt-zlib -qt-libpng -qt-webp -qt-libjpeg -qt-freetype -no-opengl -skip qt3d -skip qtactiveqt -skip qtandroidextras -skip qtcharts -skip qtconnectivity -skip qtdatavis3d -skip qtdeclarative -skip qtdoc -skip qtgamepad -skip qtlocation -skip qtlottie -skip qtmacextras -skip qtmultimedia -skip qtnetworkauth -skip qtpurchasing -skip qtquick3d -skip qtquickcontrols -skip qtquickcontrols2 -skip qtquicktimeline -skip qtremoteobjects -skip qtscript -skip qtsensors -skip qtspeech -skip qtsvg -skip qtwayland -skip qtwebglplugin -skip qtwebview -skip webengine -skip qtgraphs -skip qtmqtt -skip qtopcua -skip qtquick3dphysics -skip qtquickeffectmaker -skip qtvirtualkeyboard -skip qtdeclarative -skip qtwebengine \
+          mkdir ${{ env.QT_VERSION }}
+          mkdir "${{ env.QT_VERSION }}-build"
+          cd "${{ env.QT_VERSION }}-build"
+          ../qt-everywhere-src-${{ env.QT_VERSION }}/configure -static -release -platform win32-msvc \
+            -opensource -confirm-license -prefix "../${{ env.QT_VERSION }}" \
+            -skip qtwebengine \
             -openssl-linked -I "C:/OpenSSL/include" -L "C:/OpenSSL/lib" \
-            -feature-vulkan -I "${VULKAN_SDK}/Include" -L "${VULKAN_SDK}/Lib" \
-            -nomake examples -nomake tests 
-
-#            
-
-
-            #-DQT_FEATURE_vulkan=ON \
-            #-DVulkan_INCLUDE_DIR="${VULKAN_SDK}\\Include" \
-            #-DVulkan_LIBRARY="${VULKAN_SDK}\\Lib\\vulkan-1.lib" \
-            #-DOPENSSL_ROOT_DIR="C:\\OpenSSL" \
-            #-DOPENSSL_USE_STATIC_LIBS=TRUE \
-            #-DCMAKE_PREFIX_PATH="C:\\OpenSSL;${VULKAN_SDK}" \
-            #-DCMAKE_INCLUDE_PATH="C:\\OpenSSL\\include;${VULKAN_SDK}\\Include" \
-            #-DCMAKE_LIBRARY_PATH="C:\\OpenSSL\\lib;${VULKAN_SDK}\\Lib"
+             -feature-relocatable -nomake examples -nomake tests
 
       - name: Build and install Qt
         shell: bash
         run: |
-          cd qt-everywhere-src-${{ env.QT_VERSION }}
+          cd "${{ env.QT_VERSION }}-build"
           cmake --build . --parallel
           cmake --install .
-
-      - name: Package Qt
-        run: |
-          cd qt-everywhere-src-${{ env.QT_VERSION }}
-          7z a -tzip qt-static.zip .\qt-static\*
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: qt-static-win
-          path: qt-everywhere-src-${{ env.QT_VERSION }}/qt-static.zip
+          name: ${{ env.QT_VERSION }}-qt-static-win
+          path: ${{ env.QT_VERSION }}
