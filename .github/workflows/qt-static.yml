@@ -55,7 +55,7 @@ jobs:
             -opensource -confirm-license -prefix "C:/Qt/${{ env.QT_VERSION }}-qt-static-win" \
             -qt-zlib -qt-libjpeg -qt-libpng -qt-freetype -qt-pcre -qt-harfbuzz \
             -skip qtwebengine \
-            -openssl-linked -I "C:/OpenSSL/include" -L "C:/OpenSSL/lib" \
+            -openssl-linked -I "C:/OpenSSL/include" -L "C:/OpenSSL/lib/VC/static"  OPENSSL_LIBS="-lUser32 -lAdvapi32 -lGdi32 -lCrypt32 -lws2_32" OPENSSL_LIBS_DEBUG="-llibssl64MTd -llibcrypto64MTd" OPENSSL_LIBS_RELEASE="-llibssl64MT -llibcrypto64MT" \
             -nomake examples -nomake tests
 
       - name: Build and install Qt
