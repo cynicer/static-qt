@@ -8,9 +8,9 @@ on:
         required: true
         default: '6.9.1'
       openssl_version:
-        description: 'OpenSSL version (e.g., 3_5_1)'
+        description: 'OpenSSL version (e.g., 3_5_2)'
         required: true
-        default: '3_5_1'
+        default: '3_5_2'
 
 jobs:
   build-qt:
