@@ -67,11 +67,10 @@ jobs:
 
       - name: Package Qt
         run: |
-          cd C:/Qt/
-          7z a -tzip qt-static.zip "${{ env.QT_VERSION }}-qt-static-win"
+          7z a -tzip "${{ env.QT_VERSION }}-qt-static-win.zip" "C:/Qt/${{ env.QT_VERSION }}-qt-static-win"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.QT_VERSION }}-qt-static-win
-          path: "C:/Qt/${{ env.QT_VERSION }}-qt-static-win"
+          path: "${{ env.QT_VERSION }}-qt-static-win.zip"
