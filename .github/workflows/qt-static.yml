@@ -51,26 +51,26 @@ jobs:
           mkdir ${{ env.QT_VERSION }}
           mkdir "${{ env.QT_VERSION }}-build"
           cd "${{ env.QT_VERSION }}-build"
-          ../qt-everywhere-src-${{ env.QT_VERSION }}/configure -static -static-runtime -release -platform win32-msvc \
+          ../qt-everywhere-src-${{ env.QT_VERSION }}/configure -static -static-runtime -debug -platform win32-msvc \
             -opensource -confirm-license -prefix "C:/Qt/${{ env.QT_VERSION }}-qt-static-win" \
             -qt-zlib -qt-libjpeg -qt-libpng -qt-freetype -qt-pcre -qt-harfbuzz \
             -skip qtwebengine \
             -openssl-linked -I "C:/OpenSSL/include" -L "C:/OpenSSL/lib/VC/x64/MT" OPENSSL_LIBS="-lUser32 -lAdvapi32 -lGdi32 -lCrypt32 -lws2_32 -llibssl -llibcrypto" \
             -nomake examples -nomake tests
 
-      - name: Build and install Qt (Release)
-        shell: bash
-        run: |
-          cd "${{ env.QT_VERSION }}-build"
-          cmake --build . --parallel --config Release
-          cmake --install . --config Release
-
- #     - name: Build and install Qt (Debug)
+ #     - name: Build and install Qt (Release)
  #       shell: bash
  #       run: |
  #         cd "${{ env.QT_VERSION }}-build"
- #         cmake --build . --parallel --config Debug
- #         cmake --install . --config Debug
+ #         cmake --build . --parallel --config Release
+ #         cmake --install . --config Release
+
+      - name: Build and install Qt (Debug)
+        shell: bash
+        run: |
+          cd "${{ env.QT_VERSION }}-build"
+          cmake --build . --parallel --config Debug
+          cmake --install . --config Debug
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
