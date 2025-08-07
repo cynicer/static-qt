@@ -49,7 +49,7 @@ jobs:
       - name: Configure Qt with CMake (static + OpenSSL)
         shell: bash
         run: |
-          rm -r "C:/Qt/${{ env.QT_VERSION }}-qt-static-win"
+          rm -rf "C:/Qt/${{ env.QT_VERSION }}-qt-static-win"
           mkdir ${{ env.QT_VERSION }}
           mkdir "${{ env.QT_VERSION }}-build"
           cd "${{ env.QT_VERSION }}-build"
