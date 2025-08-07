@@ -65,19 +65,15 @@ jobs:
           cmake --build . --parallel --config Debug
           cmake --install . --config Debug
 
-      - name: Build and install Qt (Debug)
-        shell: bash
-        run: |
-          cd "${{ env.QT_VERSION }}-build"
-          cmake --build . --parallel --config Debug
-          cmake --install . --config Debug
-          
-      - name: Package Qt
-        run: |
-          7z a -tzip "${{ env.QT_VERSION }}-qt-static-win.zip" "C:/Qt/${{ env.QT_VERSION }}-qt-static-win"
+ #     - name: Build and install Qt (Debug)
+ #       shell: bash
+ #       run: |
+ #         cd "${{ env.QT_VERSION }}-build"
+ #         cmake --build . --parallel --config Debug
+ #         cmake --install . --config Debug
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.QT_VERSION }}-qt-static-win
-          path: "${{ env.QT_VERSION }}-qt-static-win.zip"
+          path: "C:/Qt/${{ env.QT_VERSION }}-qt-static-win"
