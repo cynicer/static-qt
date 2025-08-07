@@ -48,6 +48,7 @@ jobs:
       - name: Configure Qt with CMake (static + OpenSSL)
         shell: bash
         run: |
+          rm -r "C:/Qt/${{ env.QT_VERSION }}-qt-static-win"
           mkdir ${{ env.QT_VERSION }}
           mkdir "${{ env.QT_VERSION }}-build"
           cd "${{ env.QT_VERSION }}-build"
@@ -55,7 +56,7 @@ jobs:
             -opensource -confirm-license -prefix "C:/Qt/${{ env.QT_VERSION }}-qt-static-win" \
             -qt-zlib -qt-libjpeg -qt-libpng -qt-freetype -qt-pcre -qt-harfbuzz \
             -skip qtwebengine \
-            -openssl-linked -I "C:/OpenSSL/include" -L "C:/OpenSSL/lib/VC/x64/MT" OPENSSL_LIBS="-lUser32 -lAdvapi32 -lGdi32 -lCrypt32 -lws2_32 -llibssl -llibcrypto" \
+            -openssl-linked -DOPENSSL_USE_STATIC_LIB=ON -I "C:/OpenSSL/include" -L "C:/OpenSSL/lib/VC/x64/MT" OPENSSL_LIBS="-lUser32 -lAdvapi32 -lGdi32 -lCrypt32 -lws2_32 -llibssl -llibcrypto" \
             -nomake examples -nomake tests
 
  #     - name: Build and install Qt (Release)
@@ -71,6 +72,7 @@ jobs:
           cd "${{ env.QT_VERSION }}-build"
           cmake --build . --parallel --config Debug
           cmake --install . --config Debug
+          sleep 60
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
