@@ -33,14 +33,15 @@ jobs:
         run: |
           QT_MINOR_VERSION=$(echo "${{ env.QT_VERSION }}" | cut -d. -f1,2)
           echo "QT_MINOR_VERSION=$QT_MINOR_VERSION" >> $GITHUB_ENV
-          curl -LO https://download.qt.io/official_releases/qt/$QT_MINOR_VERSION/${{ env.QT_VERSION }}/single/qt-everywhere-src-${{ env.QT_VERSION }}.zip
-          7z x qt-everywhere-src-${{ env.QT_VERSION }}.zip -y > /dev/null
+          #curl -LO https://download.qt.io/official_releases/qt/$QT_MINOR_VERSION/${{ env.QT_VERSION }}/single/qt-everywhere-src-${{ env.QT_VERSION }}.zip
+          #7z x qt-everywhere-src-${{ env.QT_VERSION }}.zip -y > /dev/null
+          7z x C:/Qt/qt-everywhere-src-6.9.1.zip -o.
 
       - name: Download and Extract OpenSSL (prebuilt)
         run: |
-          $installer = "Win64OpenSSL-${{ env.OPENSSL_VERSION }}.exe"
-          Invoke-WebRequest -Uri "https://slproweb.com/download/$installer" -OutFile $installer
-          Start-Process -Wait -FilePath $installer -ArgumentList "/silent", "/verysilent", "/sp-", "/suppressmsgboxes", "/DIR=C:\OpenSSL"
+          #$installer = "Win64OpenSSL-${{ env.OPENSSL_VERSION }}.exe"
+          #Invoke-WebRequest -Uri "https://slproweb.com/download/$installer" -OutFile $installer
+          #Start-Process -Wait -FilePath $installer -ArgumentList "/silent", "/verysilent", "/sp-", "/suppressmsgboxes", "/DIR=C:\OpenSSL"
 
       - name: Set up MSVC
         uses: ilammy/msvc-dev-cmd@v1
@@ -54,9 +55,8 @@ jobs:
           cd "${{ env.QT_VERSION }}-build"
           ../qt-everywhere-src-${{ env.QT_VERSION }}/configure -static -static-runtime -release -platform win32-msvc \
             -opensource -confirm-license -prefix "C:/Qt/${{ env.QT_VERSION }}-qt-static-win" \
-            -qt-zlib -qt-libjpeg -qt-libpng -qt-freetype -qt-pcre -qt-harfbuzz \
-            -skip qtwebengine \
-            -skip qt3d -skip qt5compat -skip qtactiveqt -skip qtcharts -skip qtcoap -skip qtconnectivity \
+            -qt-zlib -qt-libjpeg -qt-libpng -qt-freetype -qt-pcre -qt-harfbuzz -skip qtgraphs \
+            -skip qt3d -skip qtactiveqt -skip qtcharts -skip qtcoap -skip qtconnectivity \
             -skip qtdatavis3d -skip qtdoc -skip qtlottie -skip qtmqtt -skip qtnetworkauth -skip qtopcua \
             -skip qtserialport -skip qtpositioning -skip qtquicktimeline -skip qtquick3d -skip qtremoteobjects \
             -skip qtscxml -skip qtsensors -skip qtserialbus -skip qtvirtualkeyboard -skip qtwayland \
