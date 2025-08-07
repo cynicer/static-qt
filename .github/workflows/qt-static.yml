@@ -51,7 +51,7 @@ jobs:
           mkdir ${{ env.QT_VERSION }}
           mkdir "${{ env.QT_VERSION }}-build"
           cd "${{ env.QT_VERSION }}-build"
-          ../qt-everywhere-src-${{ env.QT_VERSION }}/configure -static -static-runtime -debug-and-release -platform win32-msvc \
+          ../qt-everywhere-src-${{ env.QT_VERSION }}/configure -static -static-runtime -release -platform win32-msvc \
             -opensource -confirm-license -prefix "C:/Qt/${{ env.QT_VERSION }}-qt-static-win" \
             -qt-zlib -qt-libjpeg -qt-libpng -qt-freetype -qt-pcre -qt-harfbuzz \
             -skip qtwebengine \
