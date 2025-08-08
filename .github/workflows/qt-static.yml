@@ -63,7 +63,7 @@ jobs:
             -skip qtquickcontrols2 -skip qtquickvectorimage -skip qtquickeffects \
             -skip qtremoteobjects -skip qtscxml -skip qtsensors -skip qtserialbus \
             -skip qtserialport -skip qtvirtualkeyboard -skip qtwayland \
-            -skip qtwebchannel -skip qtwebengine -skip qtwebview \
+            -skip qtwebchannel -skip qtwebengine -skip qtwebview -skip qtquickeffectmaker \
             -skip qtspeech -skip qthttpserver \
             -openssl-linked -I "C:/OpenSSL/include" -L "C:/OpenSSL/lib/VC/x64/MT" OPENSSL_LIBS="-lUser32 -lAdvapi32 -lGdi32 -lCrypt32 -lws2_32 -lssl_static -lcrypto_static" \
             -nomake examples -nomake tests \
