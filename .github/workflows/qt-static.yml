@@ -56,11 +56,15 @@ jobs:
           ../qt-everywhere-src-${{ env.QT_VERSION }}/configure -static -static-runtime -debug-and-release -platform win32-msvc \
             -opensource -confirm-license -prefix "C:/Qt/${{ env.QT_VERSION }}-qt-static-win" \
             -qt-zlib -qt-libjpeg -qt-libpng -qt-freetype -qt-pcre -qt-harfbuzz \
-            -skip qt3d -skip qtactiveqt -skip qtcharts -skip qtcoap -skip qtconnectivity -skip qtlocation -skip qtgraphs \
-            -skip qtdatavis3d -skip qtdoc -skip qtlottie -skip qtmqtt -skip qtnetworkauth -skip qtopcua \
-            -skip qtserialport -skip qtpositioning -skip qtquicktimeline -skip qtquick3d -skip qtremoteobjects \
-            -skip qtscxml -skip qtsensors -skip qtserialbus -skip qtvirtualkeyboard -skip qtwayland -skip qtquickcontrols2 \
-            -skip qtwebchannel -skip qtwebengine -skip qtwebview -skip qtquick3dphysics -skip qtspeech -skip qthttpserver \
+            -skip qt3d -skip qtactiveqt -skip qtcharts -skip qtcoap -skip qtconnectivity \
+            -skip qtdeclarative -skip qtlocation -skip qtgraphs -skip qtdatavis3d \
+            -skip qtdoc -skip qtlottie -skip qtmqtt -skip qtnetworkauth -skip qtopcua \
+            -skip qtpositioning -skip qtquick3d -skip qtquick3dphysics -skip qtquicktimeline \
+            -skip qtquickcontrols2 -skip qtquickvectorimage -skip qtquickeffects \
+            -skip qtremoteobjects -skip qtscxml -skip qtsensors -skip qtserialbus \
+            -skip qtserialport -skip qtvirtualkeyboard -skip qtwayland \
+            -skip qtwebchannel -skip qtwebengine -skip qtwebview \
+            -skip qtspeech -skip qthttpserver \
             -openssl-linked -I "C:/OpenSSL/include" -L "C:/OpenSSL/lib/VC/x64/MT" OPENSSL_LIBS="-lUser32 -lAdvapi32 -lGdi32 -lCrypt32 -lws2_32 -lssl_static -lcrypto_static" \
             -nomake examples -nomake tests \
             -- -DCMAKE_EXE_LINKER_FLAGS_INIT="/LIBPATH:C:/Qt/${QT_VERSION}-qt-static-win/lib" -DCMAKE_SHARED_LINKER_FLAGS_INIT="/LIBPATH:C:/Qt/${QT_VERSION}-qt-static-win/lib"
