@@ -7,6 +7,8 @@ on:
         description: 'Qt version (e.g., 6.9.1)'
         required: true
         default: '6.9.1'
+
+      # Only the last version is hosted usually, it will fail to download once there is a new version released.
       openssl_version:
         description: 'OpenSSL version (e.g., 3_5_2)'
         required: true
@@ -19,6 +21,7 @@ jobs:
     env:
       QT_VERSION: ${{ inputs.qt_version }}
       OPENSSL_VERSION: ${{ inputs.openssl_version }}
+      QT_INSTALL_DIR: "C:/Qt/${{ env.QT_VERSION }}-qt-static-win"
 
     steps:
       - name: Checkout
@@ -33,28 +36,28 @@ jobs:
         run: |
           QT_MINOR_VERSION=$(echo "${{ env.QT_VERSION }}" | cut -d. -f1,2)
           echo "QT_MINOR_VERSION=$QT_MINOR_VERSION" >> $GITHUB_ENV
-          #curl -LO https://download.qt.io/official_releases/qt/$QT_MINOR_VERSION/${{ env.QT_VERSION }}/single/qt-everywhere-src-${{ env.QT_VERSION }}.zip
-          #7z x qt-everywhere-src-${{ env.QT_VERSION }}.zip -y > /dev/null
-          7z x C:/Qt/qt-everywhere-src-6.9.1.zip -o.
+          curl -LO https://download.qt.io/official_releases/qt/$QT_MINOR_VERSION/${{ env.QT_VERSION }}/single/qt-everywhere-src-${{ env.QT_VERSION }}.zip
+          7z x qt-everywhere-src-${{ env.QT_VERSION }}.zip -y > /dev/null
 
       - name: Download and Extract OpenSSL (prebuilt)
         run: |
-          #$installer = "Win64OpenSSL-${{ env.OPENSSL_VERSION }}.exe"
-          #Invoke-WebRequest -Uri "https://slproweb.com/download/$installer" -OutFile $installer
-          #Start-Process -Wait -FilePath $installer -ArgumentList "/silent", "/verysilent", "/sp-", "/suppressmsgboxes", "/DIR=C:\OpenSSL"
+          $installer = "Win64OpenSSL-${{ env.OPENSSL_VERSION }}.exe"
+          Invoke-WebRequest -Uri "https://slproweb.com/download/$installer" -OutFile $installer
+          Start-Process -Wait -FilePath $installer -ArgumentList "/silent", "/verysilent", "/sp-", "/suppressmsgboxes", "/DIR=C:\OpenSSL"
 
       - name: Set up MSVC
         uses: ilammy/msvc-dev-cmd@v1
 
+      # Relocatable build messes up our static build -> using prefixed -> Qt build needs to go into "C:/Qt/${{ env.QT_VERSION }}-qt-static-win
+      # 
       - name: Configure Qt with CMake (static + OpenSSL)
         shell: bash
         run: |
-          rm -rf "C:/Qt/${{ env.QT_VERSION }}-qt-static-win"
-          mkdir ${{ env.QT_VERSION }}
+          rm -rf "${{ env.QT_INSTALL_DIR }}"
           mkdir "${{ env.QT_VERSION }}-build"
           cd "${{ env.QT_VERSION }}-build"
           ../qt-everywhere-src-${{ env.QT_VERSION }}/configure -static -static-runtime -debug-and-release -platform win32-msvc \
-            -opensource -confirm-license -prefix "C:/Qt/${{ env.QT_VERSION }}-qt-static-win" \
+            -opensource -confirm-license -prefix "${{ env.QT_INSTALL_DIR }}" \
             -qt-zlib -qt-libjpeg -qt-libpng -qt-freetype -qt-pcre -qt-harfbuzz \
             -skip qt3d -skip qtactiveqt -skip qtcharts -skip qtcoap -skip qtconnectivity \
             -skip qtdeclarative -skip qtlocation -skip qtgraphs -skip qtdatavis3d \
@@ -83,17 +86,16 @@ jobs:
           cmake --install . --config Release
           cmake --install . --config Debug
 
+      # Packe the OpenSSL static libs with Qt, so we load them automatically.
       - name: Copy OpenSSL static libs
         shell: bash
         run: |
-          cp "C:/OpenSSL/lib/VC/x64/MT/libssl_static.lib" "C:/Qt/${{ env.QT_VERSION }}-qt-static-win/lib/libssl.lib"
-          cp "C:/OpenSSL/lib/VC/x64/MT/libcrypto_static.lib" "C:/Qt/${{ env.QT_VERSION }}-qt-static-win/lib/libcrypto.lib"
-
-# TODO cleanup vars
+          cp "C:/OpenSSL/lib/VC/x64/MT/libssl_static.lib" "${{ env.QT_INSTALL_DIR }}/lib/libssl.lib"
+          cp "C:/OpenSSL/lib/VC/x64/MT/libcrypto_static.lib" "${{ env.QT_INSTALL_DIR }}/lib/libcrypto.lib"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.QT_VERSION }}-qt-static-win
-          path: "C:/Qt/${{ env.QT_VERSION }}-qt-static-win"
+          path: "${{ env.QT_INSTALL_DIR }}"
           include-hidden-files: true
