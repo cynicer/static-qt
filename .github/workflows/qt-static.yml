@@ -21,7 +21,7 @@ jobs:
     env:
       QT_VERSION: ${{ inputs.qt_version }}
       OPENSSL_VERSION: ${{ inputs.openssl_version }}
-      QT_INSTALL_DIR: "C:/Qt/${{ env.QT_VERSION }}-qt-static-win"
+      QT_INSTALL_DIR: "C:/Qt/${{ QT_VERSION }}-qt-static-win"
       OPENSSL_INSTALL_DIR: ${{ github.workspace }}\OpenSSL
 
     steps:
