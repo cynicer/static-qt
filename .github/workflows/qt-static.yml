@@ -61,7 +61,8 @@ jobs:
             -skip qtserialport -skip qtpositioning -skip qtquicktimeline -skip qtquick3d -skip qtremoteobjects \
             -skip qtscxml -skip qtsensors -skip qtserialbus -skip qtvirtualkeyboard -skip qtwayland \
             -skip qtwebchannel -skip qtwebengine -skip qtwebview -skip qtquick3dphysics -skip qtspeech -skip qthttpserver \
-            -openssl-linked -I "C:/OpenSSL/include" -L "C:/OpenSSL/lib/VC/x64/MT" -L "C:/Qt/${{ env.QT_VERSION }}-qt-static-win/lib" OPENSSL_LIBS="-lUser32 -lAdvapi32 -lGdi32 -lCrypt32 -lws2_32 -lssl_static -lcrypto_static" \
+            -openssl-linked -I "C:/OpenSSL/include" -L "C:/OpenSSL/lib/VC/x64/MT" OPENSSL_LIBS="-lUser32 -lAdvapi32 -lGdi32 -lCrypt32 -lws2_32 -lssl_static -lcrypto_static" \
+            QMAKE_LFLAGS+=-LIBPATH:\"C:/Qt/${{ env.QT_VERSION }}-qt-static-win/lib\" \
             -nomake examples -nomake tests
 
       - name: Build and install Qt (Release)
