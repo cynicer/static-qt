@@ -53,7 +53,7 @@ jobs:
           mkdir ${{ env.QT_VERSION }}
           mkdir "${{ env.QT_VERSION }}-build"
           cd "${{ env.QT_VERSION }}-build"
-          ../qt-everywhere-src-${{ env.QT_VERSION }}/configure -static -static-runtime -release -platform win32-msvc \
+          ../qt-everywhere-src-${{ env.QT_VERSION }}/configure -static -static-runtime -debug-and-release -platform win32-msvc \
             -opensource -confirm-license -prefix "C:/Qt/${{ env.QT_VERSION }}-qt-static-win" \
             -qt-zlib -qt-libjpeg -qt-libpng -qt-freetype -qt-pcre -qt-harfbuzz \
             -skip qt3d -skip qtactiveqt -skip qtcharts -skip qtcoap -skip qtconnectivity -skip qtlocation -skip qtgraphs \
@@ -65,12 +65,19 @@ jobs:
             -nomake examples -nomake tests \
             -- -DCMAKE_EXE_LINKER_FLAGS_INIT="/LIBPATH:C:/Qt/${QT_VERSION}-qt-static-win/lib" -DCMAKE_SHARED_LINKER_FLAGS_INIT="/LIBPATH:C:/Qt/${QT_VERSION}-qt-static-win/lib"
 
-      - name: Build and install Qt (Release)
+      - name: Build Qt (Debug + Release)
         shell: bash
         run: |
           cd "${{ env.QT_VERSION }}-build"
           cmake --build . --parallel --config Release
+          cmake --build . --parallel --config Debug
+      
+      - name: Install Qt (Debug + Release)
+        shell: bash
+        run: |
+          cd "${{ env.QT_VERSION }}-build"
           cmake --install . --config Release
+          cmake --install . --config Debug
 
       - name: Copy OpenSSL static libs
         shell: bash
@@ -79,14 +86,6 @@ jobs:
           cp "C:/OpenSSL/lib/VC/x64/MT/libcrypto_static.lib" "C:/Qt/${{ env.QT_VERSION }}-qt-static-win/lib/libcrypto.lib"
 
 # TODO cleanup vars
-# TODO debug build
-
-#      - name: Build and install Qt (Debug)
-#        shell: bash
-#        run: |
-#          cd "${{ env.QT_VERSION }}-build"
-#          cmake --build . --parallel --config Debug
-#          cmake --install . --config Debug
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
