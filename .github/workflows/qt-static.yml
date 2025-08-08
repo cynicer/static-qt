@@ -22,6 +22,7 @@ jobs:
       QT_VERSION: ${{ inputs.qt_version }}
       OPENSSL_VERSION: ${{ inputs.openssl_version }}
       QT_INSTALL_DIR: "C:/Qt/${{ env.QT_VERSION }}-qt-static-win"
+      OPENSSL_INSTALL_DIR: ${{ github.workspace }}\OpenSSL
 
     steps:
       - name: Checkout
@@ -43,13 +44,12 @@ jobs:
         run: |
           $installer = "Win64OpenSSL-${{ env.OPENSSL_VERSION }}.exe"
           Invoke-WebRequest -Uri "https://slproweb.com/download/$installer" -OutFile $installer
-          Start-Process -Wait -FilePath $installer -ArgumentList "/silent", "/verysilent", "/sp-", "/suppressmsgboxes", "/DIR=C:\OpenSSL"
+          Start-Process -Wait -FilePath $installer -ArgumentList "/silent", "/verysilent", "/sp-", "/suppressmsgboxes", "/DIR=${{ env.OPENSSL_INSTALL_DIR }}"
 
       - name: Set up MSVC
         uses: ilammy/msvc-dev-cmd@v1
 
       # Relocatable build messes up our static build -> using prefixed -> Qt build needs to go into "C:/Qt/${{ env.QT_VERSION }}-qt-static-win
-      # 
       - name: Configure Qt with CMake (static + OpenSSL)
         shell: bash
         run: |
@@ -68,7 +68,7 @@ jobs:
             -skip qtserialport -skip qtvirtualkeyboard -skip qtwayland \
             -skip qtwebchannel -skip qtwebengine -skip qtwebview -skip qtquickeffectmaker \
             -skip qtspeech -skip qthttpserver \
-            -openssl-linked -I "C:/OpenSSL/include" -L "C:/OpenSSL/lib/VC/x64/MT" OPENSSL_LIBS="-lUser32 -lAdvapi32 -lGdi32 -lCrypt32 -lws2_32 -lssl_static -lcrypto_static" \
+            -openssl-linked -I "${{ env.OPENSSL_INSTALL_DIR }}/include" -L "${{ env.OPENSSL_INSTALL_DIR }}/lib/VC/x64/MT" OPENSSL_LIBS="-lUser32 -lAdvapi32 -lGdi32 -lCrypt32 -lws2_32 -lssl_static -lcrypto_static" \
             -nomake examples -nomake tests \
             -- -DCMAKE_EXE_LINKER_FLAGS_INIT="/LIBPATH:C:/Qt/${QT_VERSION}-qt-static-win/lib" -DCMAKE_SHARED_LINKER_FLAGS_INIT="/LIBPATH:C:/Qt/${QT_VERSION}-qt-static-win/lib"
 
@@ -90,8 +90,8 @@ jobs:
       - name: Copy OpenSSL static libs
         shell: bash
         run: |
-          cp "C:/OpenSSL/lib/VC/x64/MT/libssl_static.lib" "${{ env.QT_INSTALL_DIR }}/lib/libssl.lib"
-          cp "C:/OpenSSL/lib/VC/x64/MT/libcrypto_static.lib" "${{ env.QT_INSTALL_DIR }}/lib/libcrypto.lib"
+          cp "${{ env.OPENSSL_INSTALL_DIR }}/lib/VC/x64/MT/libssl_static.lib" "${{ env.QT_INSTALL_DIR }}/lib/libssl.lib"
+          cp "${{ env.OPENSSL_INSTALL_DIR }}/lib/VC/x64/MT/libcrypto_static.lib" "${{ env.QT_INSTALL_DIR }}/lib/libcrypto.lib"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
