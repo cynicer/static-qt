@@ -61,7 +61,7 @@ jobs:
             -skip qtserialport -skip qtpositioning -skip qtquicktimeline -skip qtquick3d -skip qtremoteobjects \
             -skip qtscxml -skip qtsensors -skip qtserialbus -skip qtvirtualkeyboard -skip qtwayland \
             -skip qtwebchannel -skip qtwebengine -skip qtwebview -skip qtquick3dphysics -skip qtspeech -skip qthttpserver \
-            -openssl-linked -I "C:/OpenSSL/include" -L "C:/OpenSSL/lib/VC/x64/MT" OPENSSL_LIBS="-lUser32 -lAdvapi32 -lGdi32 -lCrypt32 -lws2_32 -lssl_static -lcrypto_static" \
+            -openssl-linked -I "C:/OpenSSL/include" -L "C:/OpenSSL/lib/VC/x64/MT" -L "C:/Qt/${{ env.QT_VERSION }}-qt-static-win/lib" OPENSSL_LIBS="-lUser32 -lAdvapi32 -lGdi32 -lCrypt32 -lws2_32 -lssl_static -lcrypto_static" \
             -nomake examples -nomake tests
 
       - name: Build and install Qt (Release)
@@ -70,7 +70,15 @@ jobs:
           cd "${{ env.QT_VERSION }}-build"
           cmake --build . --parallel --config Release
           cmake --install . --config Release
-          sleep 180
+
+      - name: Copy OpenSSL static libs
+        shell: bash
+        run: |
+          cp "C:/OpenSSL/lib/VC/x64/MT/libssl_static.lib" "C:/Qt/${{ env.QT_VERSION }}-qt-static-win/lib/libssl.lib"
+          cp "C:/OpenSSL/lib/VC/x64/MT/libcrypto_static.lib" "C:/Qt/${{ env.QT_VERSION }}-qt-static-win/lib/libcrypto.lib"
+
+# TODO cleanup vars
+# TODO debug build
 
 #      - name: Build and install Qt (Debug)
 #        shell: bash
@@ -78,10 +86,10 @@ jobs:
 #          cd "${{ env.QT_VERSION }}-build"
 #          cmake --build . --parallel --config Debug
 #          cmake --install . --config Debug
-#          sleep 60
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.QT_VERSION }}-qt-static-win
           path: "C:/Qt/${{ env.QT_VERSION }}-qt-static-win"
+          include-hidden-files: true
