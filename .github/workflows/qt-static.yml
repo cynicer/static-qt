@@ -43,8 +43,7 @@ jobs:
         run: |
           $installer = "Win64OpenSSL-${{ env.OPENSSL_VERSION }}.exe"
           Invoke-WebRequest -Uri "https://slproweb.com/download/$installer" -OutFile $installer
-          $targetDir = Join-Path -Path (Get-Location) -ChildPath "OpenSSL"
-          Start-Process -Wait -FilePath $installer -ArgumentList "/silent", "/verysilent", "/sp-", "/suppressmsgboxes", "/DIR=$targetDir"
+          Start-Process -Wait -FilePath $installer -ArgumentList "/silent", "/verysilent", "/sp-", "/suppressmsgboxes", "/DIR=$($(pwd)/OpenSSL)"
 
       - name: Set up MSVC
         uses: ilammy/msvc-dev-cmd@v1
