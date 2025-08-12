@@ -53,6 +53,7 @@ jobs:
       - name: Configure Qt with CMake (static + OpenSSL)
         shell: bash
         run: |
+          OPENSSL_ROOT_DIR="$(pwd)/OpenSSL"
           rm -rf "${{ env.QT_INSTALL_DIR }}"
           mkdir "${{ env.QT_VERSION }}-build"
           cd "${{ env.QT_VERSION }}-build"
@@ -68,7 +69,7 @@ jobs:
             -skip qtserialport -skip qtvirtualkeyboard -skip qtwayland \
             -skip qtwebchannel -skip qtwebengine -skip qtwebview -skip qtquickeffectmaker \
             -skip qtspeech -skip qthttpserver \
-            -openssl-linked -I "../OpenSSL/include" -L "../OpenSSL/lib/VC/x64/MT" OPENSSL_LIBS="-lUser32 -lAdvapi32 -lGdi32 -lCrypt32 -lws2_32 -lssl_static -lcrypto_static" \
+            -openssl-linked -I "$OPENSSL_ROOT_DIR/include" -L "$OPENSSL_ROOT_DIR/lib/VC/x64/MT" OPENSSL_LIBS="-lUser32 -lAdvapi32 -lGdi32 -lCrypt32 -lws2_32 -lssl_static -lcrypto_static" \
             -nomake examples -nomake tests \
             -- -DCMAKE_EXE_LINKER_FLAGS_INIT="/LIBPATH:C:/Qt/${QT_VERSION}-qt-static-win/lib" -DCMAKE_SHARED_LINKER_FLAGS_INIT="/LIBPATH:C:/Qt/${QT_VERSION}-qt-static-win/lib"
 
