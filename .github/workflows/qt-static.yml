@@ -59,7 +59,7 @@ jobs:
           cd "${{ env.QT_VERSION }}-build"
           ../qt-everywhere-src-${{ env.QT_VERSION }}/configure -static -static-runtime -debug-and-release -platform win32-msvc \
             -opensource -confirm-license -prefix "${{ env.QT_INSTALL_DIR }}" \
-            -qt-zlib -qt-libjpeg -qt-libpng -qt-freetype -qt-pcre -qt-harfbuzz \
+            -qt-zlib -qt-libjpeg -qt-libpng -qt-freetype -qt-pcre -qt-harfbuzz -qt-webp -qt-tiff -no-shared \
             -skip qt3d -skip qtactiveqt -skip qtcharts -skip qtcoap -skip qtconnectivity \
             -skip qtdeclarative -skip qtlocation -skip qtgraphs -skip qtdatavis3d \
             -skip qtdoc -skip qtlottie -skip qtmqtt -skip qtnetworkauth -skip qtopcua \
